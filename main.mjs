@@ -42,12 +42,12 @@ async function loadChallenge(challenge, repeat = false) {
       console.log("💪 Good job! On to the next challenge! 🧑‍💻");
     else if (currentScore > lowestScore) {
       console.log(
-        `🧩 The challenge can still be optimized to a score of ${lowestScore}, try again! 🤔`
+        `🧩 The challenge can still be optimized to a score of ${lowestScore}, try again! 🤔`,
       );
       return loadChallenge(challenge, true);
     } else if (currentScore < lowestScore) {
       console.log(
-        "🤯 Wow! A new solution found! Update the challenges file! 🤩"
+        "🤯 Wow! A new solution found! Update the challenges file! 🤩",
       );
       process.exit();
     } else throw new Error("Unknown scoring.");
@@ -59,13 +59,13 @@ async function playAllChallenges() {
 
   if (args.includes("--noteworthy"))
     relevantChallenges = relevantChallenges.filter(
-      (challenge) => challenge.noteworthy
+      (challenge) => challenge.noteworthy,
     );
   if (args.includes("--random"))
     relevantChallenges.sort(() => 0.5 - Math.random());
   if (args.includes("--revised"))
     relevantChallenges = relevantChallenges.filter(
-      (challenge) => challenge.revised
+      (challenge) => challenge.revised,
     );
 
   for (const challenge of relevantChallenges) {
@@ -78,10 +78,10 @@ async function playAllChallenges() {
 async function playChallengeById() {
   const [challegeArgument] = args;
   const { challengeId } = challegeArgument.match(
-    /^--id=(?<challengeId>\w+)$/
+    /^--id=(?<challengeId>\w+)$/,
   ).groups;
   const challengeToLoad = challenges.find(
-    (challenge) => challenge.id === challengeId
+    (challenge) => challenge.id === challengeId,
   );
   if (!challengeToLoad) throw new Error("Provide a valid challenge ID!");
 
@@ -105,7 +105,7 @@ async function getChallengeInfo(challengeId) {
   const { document } = new JSDOM(html).window;
   const [leftDiv, rightDiv] = document.querySelectorAll("div#content>div");
   const lowestScore = rightDiv.querySelector(
-    `a[href^='/challenges/${challengeId}']`
+    `a[href^='/challenges/${challengeId}']`,
   ).textContent;
   const name = leftDiv.querySelector("b").textContent;
 
