@@ -35,10 +35,13 @@ async function loadChallenge(challenge, repeat = false) {
   const newestLines = logFile.split("\r\n").reverse();
   const scoreLine = newestLines.find((line) => line.includes("Your score"));
 
+  if (!scoreLine) throw new Error("No score line found!");
+
   if (scoreLine.toLowerCase().includes("fail")) return;
   else if (scoreLine.toLowerCase().includes("success")) {
-    const [currentScore] = scoreLine.match(/(?<=: )\d+/);
-    if (currentScore == lowestScore)
+    const [currentScore] = scoreLine.match(/(?<=: )\d+/) || [];
+    if (!currentScore) throw new Error("No current score found!");
+    else if (currentScore == lowestScore)
       console.log("💪 Good job! On to the next challenge! 🧑‍💻");
     else if (currentScore > lowestScore) {
       console.log(
@@ -76,10 +79,9 @@ async function playAllChallenges() {
 }
 
 async function playChallengeById() {
-  const [challegeArgument] = args;
-  const { challengeId } = challegeArgument.match(
-    /^--id=(?<challengeId>\w+)$/,
-  ).groups;
+  const [challengeArgument] = args;
+  const { challengeId } =
+    challengeArgument.match(/^--id=(?<challengeId>\w+)$/)?.groups ?? {};
   const challengeToLoad = challenges.find(
     (challenge) => challenge.id === challengeId,
   );
@@ -106,8 +108,8 @@ async function getChallengeInfo(challengeId) {
   const [leftDiv, rightDiv] = document.querySelectorAll("div#content>div");
   const lowestScore = rightDiv.querySelector(
     `a[href^='/challenges/${challengeId}']`,
-  ).textContent;
-  const name = leftDiv.querySelector("b").textContent;
+  )?.textContent;
+  const name = leftDiv.querySelector("b")?.textContent;
 
   return { lowestScore, name };
 }
