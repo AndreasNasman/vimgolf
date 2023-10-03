@@ -1,7 +1,7 @@
 import challenges from "./challenges.json" assert { type: "json" };
 import { JSDOM } from "jsdom";
 import { execSync } from "child_process";
-import { readFileSync } from "fs";
+import { promises as fs } from "fs";
 
 const args = process.argv.slice(2);
 
@@ -28,7 +28,7 @@ async function loadChallenge(challenge, repeat = false) {
   await new Promise((r) => setTimeout(r, 2000));
   execSync(`vimgolf put ${id}`, { stdio: "inherit" });
 
-  const logFile = readFileSync("./console.log", {
+  const logFile = await fs.readFile("./console.log", {
     encoding: "utf8",
     flag: "r",
   });
