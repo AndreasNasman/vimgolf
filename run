@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+# Log all output to a file.
+# Parsed in the script to determine outcome.
+LOG_FILE='console.log'
+script -qr $LOG_FILE node --no-warnings main.mjs $@
+
+# Remove log file when the script finishes.
+rm -f $LOG_FILE
