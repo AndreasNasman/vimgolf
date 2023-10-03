@@ -18,6 +18,11 @@ if (args.includes("--all")) {
   throw new Error("❌ Unknown flag!");
 }
 
+// CTRL-C should return to parent script for cleanup to run.
+process.on("SIGINT", () => {
+  process.exit();
+});
+
 /* FUNCTIONS */
 
 async function loadChallenge(challenge, repeat = false) {
@@ -113,8 +118,3 @@ async function getChallengeInfo(challengeId) {
 
   return { lowestScore, name };
 }
-
-// CTRL-C should return to parent script for cleanup to run.
-process.on("SIGINT", () => {
-  process.exit();
-});
