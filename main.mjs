@@ -15,7 +15,7 @@ if (args.includes("--all")) {
 } else if (args.length == 0 || args.includes("--last")) {
   playLastChallenge();
 } else {
-  throw new Error("❌ Unknown flag.");
+  throw new Error("❌ Unknown flag!");
 }
 
 /* FUNCTIONS */
@@ -50,8 +50,8 @@ async function loadChallenge(challenge, repeat = false) {
         "🤯 Wow! A new solution found! Update the challenges file! 🤩",
       );
       process.exit();
-    } else throw new Error("Unknown scoring.");
-  } else throw new Error("Unhandled score line format.");
+    } else throw new Error("Unknown scoring!");
+  } else throw new Error("Unhandled score line format!");
 }
 
 async function playAllChallenges() {
