@@ -27,7 +27,7 @@ process.on("SIGINT", () => {
 
 async function loadChallenge(challenge, repeat = false) {
   let { lowestScore, id, name } = challenge;
-  console.log(`\n🥷  ${repeat ? "Repeating" : "Next"} challenge: ${name}`);
+  console.log(`🥷 ${repeat ? "Repeating" : "Next"} challenge: ${name}`);
   console.log(`🎲 Lowest score: ${lowestScore}`);
 
   await new Promise((r) => setTimeout(r, 2000));
