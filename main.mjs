@@ -18,13 +18,15 @@ if (args.includes("--all")) {
   throw new Error("❌ Unknown flag!");
 }
 
-// CTRL-C should return to parent script for cleanup to run.
+// Make CTRL-C exit this script and return to the parent script, which runs some cleanup.
 process.on("SIGINT", () => {
   process.exit();
 });
 
-/* FUNCTIONS */
-
+/**
+ * Loads given challenge and repeats it if specified.
+ * @param {{lowestScore: string, id: string, name: string}} challenge - The challenge to load.
+ * @param {boolean} repeat - Determines if the challenge should be repeated.
 async function loadChallenge(challenge, repeat = false) {
   let { lowestScore, id, name } = challenge;
   console.log(`🥷 ${repeat ? "Repeating" : "Next"} challenge: ${name}`);
@@ -62,6 +64,9 @@ async function loadChallenge(challenge, repeat = false) {
   } else throw new Error("Unhandled score line format!");
 }
 
+/**
+ * Play all challenges listed in `challenges.mjs`.
+ */
 async function playAllChallenges() {
   let relevantChallenges = [...challenges];
 
@@ -83,6 +88,9 @@ async function playAllChallenges() {
   }
 }
 
+/**
+ * Play matching challenge by the given challenge ID argument.
+ */
 async function playChallengeById() {
   const [challengeArgument] = args;
   const { challengeId } =
@@ -97,6 +105,9 @@ async function playChallengeById() {
   await loadChallenge({ id, lowestScore, name });
 }
 
+/**
+ * Play the last challenge listed in `challenges.mjs`.
+ */
 async function playLastChallenge() {
   const lastChallenge = challenges.at(-1);
   const { id } = lastChallenge;
@@ -104,6 +115,11 @@ async function playLastChallenge() {
   await loadChallenge({ id, lowestScore, name });
 }
 
+/**
+ * Uses the given challenge ID to open the corresponding VimGolf challenge page and scrapes the lowest score and name of the challenge.
+ * @param {string} challengeId - The challenge ID to request the lowest score and name for.
+ * @returns {Promise<{lowestScore: string, name: string}>} An object containing the lowest score and name for the challenge matching given challenge ID.
+ */
 async function getChallengeInfo(challengeId) {
   const url = `https://www.vimgolf.com/challenges/${challengeId}`;
   const response = await fetch(url, { headers: { Accept: "text/html" } });
