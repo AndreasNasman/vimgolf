@@ -25,12 +25,11 @@ process.on("SIGINT", () => {
 
 /**
  * Loads given challenge and repeats it if specified.
- * @param {{lowestScore: string, id: string, name: string}} challenge - The challenge to load.
- * @param {boolean} repeat - Determines if the challenge should be repeated.
+ * @param {{lowestScore: string, id: string, title: string}} challenge - The challenge to load.
  */
-async function loadChallenge(challenge, repeat = false) {
-  let { lowestScore, id, name } = challenge;
-  console.log(`🥷 ${repeat ? "Repeating" : "Next"} challenge: ${name}`);
+async function loadChallenge(challenge) {
+  let { lowestScore, id, title } = challenge;
+  console.log(`🥷 Challenge title: ${title}`);
   console.log(`🎲 Lowest score: ${lowestScore}`);
 
   await new Promise((r) => setTimeout(r, 2000));
@@ -84,8 +83,8 @@ async function playAllChallenges() {
 
   for (const challenge of relevantChallenges) {
     const { id } = challenge;
-    const { lowestScore, name } = await getChallengeInfo(id);
-    await loadChallenge({ id, lowestScore, name });
+    const { lowestScore, title } = await getChallengeInfo(id);
+    await loadChallenge({ id, lowestScore, title });
   }
 }
 
@@ -102,8 +101,8 @@ async function playChallengeById() {
   if (!challengeToLoad) throw new Error("Provide a valid challenge ID!");
 
   const { id } = challengeToLoad;
-  const { lowestScore, name } = await getChallengeInfo(id);
-  await loadChallenge({ id, lowestScore, name });
+  const { lowestScore, title } = await getChallengeInfo(id);
+  await loadChallenge({ id, lowestScore, title });
 }
 
 /**
@@ -114,14 +113,14 @@ async function playLastChallenge() {
   if (!lastChallenge) throw new Error("No challenges provided!");
 
   const { id } = lastChallenge;
-  const { lowestScore, name } = await getChallengeInfo(id);
-  await loadChallenge({ id, lowestScore, name });
+  const { lowestScore, title } = await getChallengeInfo(id);
+  await loadChallenge({ id, lowestScore, title });
 }
 
 /**
- * Uses the given challenge ID to open the corresponding VimGolf challenge page and scrapes the lowest score and name of the challenge.
- * @param {string} challengeId - The challenge ID to request the lowest score and name for.
- * @returns {Promise<{lowestScore: string, name: string}>} An object containing the lowest score and name for the challenge matching given challenge ID.
+ * Uses the given challenge ID to open the corresponding VimGolf challenge page and scrapes the lowest score and title of the challenge.
+ * @param {string} challengeId - The challenge ID to request the lowest score and title for.
+ * @returns {Promise<{lowestScore: string, title: string}>} An object containing the lowest score and title for the challenge matching given challenge ID.
  */
 async function getChallengeInfo(challengeId) {
   const url = `https://www.vimgolf.com/challenges/${challengeId}`;
@@ -133,11 +132,11 @@ async function getChallengeInfo(challengeId) {
   const lowestScore = rightDiv.querySelector(
     `a[href^='/challenges/${challengeId}']`,
   )?.textContent;
-  const name = leftDiv.querySelector("b")?.textContent;
+  const title = leftDiv.querySelector("b")?.textContent;
 
   if (!lowestScore)
     throw new Error(`No lowest score found for challenge ${challengeId}`);
-  if (!name) throw new Error(`No name found for challenge ${challengeId}`);
+  if (!title) throw new Error(`No title found for challenge ${challengeId}`);
 
-  return { lowestScore, name };
+  return { lowestScore, title };
 }
