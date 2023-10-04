@@ -27,6 +27,7 @@ process.on("SIGINT", () => {
  * Loads given challenge and repeats it if specified.
  * @param {{lowestScore: string, id: string, name: string}} challenge - The challenge to load.
  * @param {boolean} repeat - Determines if the challenge should be repeated.
+ */
 async function loadChallenge(challenge, repeat = false) {
   let { lowestScore, id, name } = challenge;
   console.log(`🥷 ${repeat ? "Repeating" : "Next"} challenge: ${name}`);
@@ -46,7 +47,7 @@ async function loadChallenge(challenge, repeat = false) {
 
   if (scoreLine.toLowerCase().includes("fail")) return;
   else if (scoreLine.toLowerCase().includes("success")) {
-    const [currentScore] = scoreLine.match(/(?<=: )\d+/) || [];
+    const [currentScore] = scoreLine.match(/(?<=: )\d+/) ?? [];
     if (!currentScore) throw new Error("No current score found!");
     else if (currentScore == lowestScore)
       console.log("💪 Good job! On to the next challenge! 🧑‍💻");
@@ -110,6 +111,8 @@ async function playChallengeById() {
  */
 async function playLastChallenge() {
   const lastChallenge = challenges.at(-1);
+  if (!lastChallenge) throw new Error("No challenges provided!");
+
   const { id } = lastChallenge;
   const { lowestScore, name } = await getChallengeInfo(id);
   await loadChallenge({ id, lowestScore, name });
@@ -131,6 +134,10 @@ async function getChallengeInfo(challengeId) {
     `a[href^='/challenges/${challengeId}']`,
   )?.textContent;
   const name = leftDiv.querySelector("b")?.textContent;
+
+  if (!lowestScore)
+    throw new Error(`No lowest score found for challenge ${challengeId}`);
+  if (!name) throw new Error(`No name found for challenge ${challengeId}`);
 
   return { lowestScore, name };
 }
