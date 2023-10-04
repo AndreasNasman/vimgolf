@@ -1,7 +1,7 @@
 import { execSync } from "child_process";
 import { promises as fs } from "fs";
 import { JSDOM } from "jsdom";
-import challenges from "./challenges.json" assert { type: "json" };
+import { challenges } from "./challenges.mjs";
 
 const args = process.argv.slice(2);
 
